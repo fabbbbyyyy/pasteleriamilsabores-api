@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@Table(name="user")
+@Table(name = "users")
 
 @Entity
 @Data
@@ -29,7 +29,7 @@ public class User {
     private String numero;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "paymentMethod",nullable = false)
+    @JoinColumn(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
 
 }
