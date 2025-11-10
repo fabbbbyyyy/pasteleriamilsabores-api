@@ -11,7 +11,8 @@ public class RegisterRequest {
     private String name;
     private String email;
     private String password;
-    private String numero;
+    private String number;
+    private String address;
     private Long paymentMethodId;
 }
 

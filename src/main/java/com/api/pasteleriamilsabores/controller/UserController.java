@@ -41,7 +41,8 @@ public class UserController {
             existingUser.setName(user.getName());
             existingUser.setMail(user.getMail());
             existingUser.setPassword(user.getPassword());
-            existingUser.setNumero(user.getNumero());
+            existingUser.setAddress(user.getAddress());
+            existingUser.setNumber(user.getNumber());
             existingUser.setPaymentMethod(user.getPaymentMethod());
             return userService.saveUser(existingUser);
         }

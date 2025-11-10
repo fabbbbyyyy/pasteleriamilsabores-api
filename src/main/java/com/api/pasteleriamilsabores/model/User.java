@@ -26,7 +26,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String mail;
 
-    private String numero;
+    @Column
+    private String address;
+
+    @Column
+    private String number;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_method", nullable = false)

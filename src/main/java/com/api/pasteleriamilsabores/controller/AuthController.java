@@ -67,7 +67,7 @@ public class AuthController {
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             // Crear respuesta
-            LoginResponse response = new LoginResponse(jwt, user.getMail(), user.getName());
+            LoginResponse response = new LoginResponse(jwt, user.getMail(), user.getName(), user.getNumber(), user.getAddress(), user.getPaymentMethod());
 
             return ResponseEntity.ok(response);
 
@@ -93,6 +93,7 @@ public class AuthController {
             }
 
             // Obtener método de pago
+            System.out.println("Metodo de pago: "+registerRequest.getPaymentMethodId());
             PaymentMethod paymentMethod = paymentMethodRepository.findById(registerRequest.getPaymentMethodId())
                     .orElseThrow(() -> new RuntimeException("Método de pago no encontrado"));
 
@@ -101,7 +102,8 @@ public class AuthController {
             newUser.setName(registerRequest.getName());
             newUser.setMail(registerRequest.getEmail());
             newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            newUser.setNumero(registerRequest.getNumero());
+            newUser.setNumber(registerRequest.getNumber());
+            newUser.setAddress(registerRequest.getAddress());
             newUser.setPaymentMethod(paymentMethod);
 
             // Guardar usuario
@@ -111,7 +113,7 @@ public class AuthController {
             final String jwt = jwtUtil.generateToken(newUser.getMail());
 
             // Crear respuesta
-            LoginResponse response = new LoginResponse(jwt, newUser.getMail(), newUser.getName());
+            LoginResponse response = new LoginResponse(jwt, newUser.getMail(), newUser.getName(), newUser.getNumber(), newUser.getAddress(), newUser.getPaymentMethod() );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
