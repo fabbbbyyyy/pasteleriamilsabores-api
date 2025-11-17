@@ -67,7 +67,7 @@ public class AuthController {
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             // Crear respuesta
-            LoginResponse response = new LoginResponse(jwt, user.getMail(), user.getName(), user.getNumber(), user.getAddress(), user.getPaymentMethod());
+            LoginResponse response = new LoginResponse(jwt, user.getMail(), user.getName(), user.getAddress(),user.getNumber(), user.getPaymentMethod(), user.getId());
 
             return ResponseEntity.ok(response);
 
@@ -113,7 +113,7 @@ public class AuthController {
             final String jwt = jwtUtil.generateToken(newUser.getMail());
 
             // Crear respuesta
-            LoginResponse response = new LoginResponse(jwt, newUser.getMail(), newUser.getName(), newUser.getNumber(), newUser.getAddress(), newUser.getPaymentMethod() );
+            LoginResponse response = new LoginResponse(jwt, newUser.getMail(), newUser.getName(), newUser.getAddress(),newUser.getNumber(), newUser.getPaymentMethod(), newUser.getId());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
+    private Long id;
     private String token;
     private String type = "Bearer";
     private String email;
@@ -18,13 +19,14 @@ public class LoginResponse {
     private PaymentMethod paymentMethod;
 
 
-    public LoginResponse(String token, String email, String name, String number, String address, PaymentMethod paymentMethod) {
+    public LoginResponse(String token, String email, String name, String address, String number, PaymentMethod paymentMethod, Long id) {
         this.token = token;
         this.email = email;
         this.name = name;
-        this.number = number;
         this.address = address;
+        this.number = number;
         this.paymentMethod = paymentMethod;
+        this.id = id;
     }
 }
 
