@@ -35,5 +35,4 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
-
 }

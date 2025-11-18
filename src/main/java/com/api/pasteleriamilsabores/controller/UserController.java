@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import java.util.Objects;
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "User", description = "User Management System")
@@ -34,19 +39,30 @@ public class UserController {
     }
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing user")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        User existingUser = userService.getUserById(id);
-        if (existingUser != null) {
-            existingUser.setId(user.getId());
-            existingUser.setName(user.getName());
-            existingUser.setMail(user.getMail());
-            existingUser.setPassword(user.getPassword());
-            existingUser.setAddress(user.getAddress());
-            existingUser.setNumber(user.getNumber());
-            existingUser.setPaymentMethod(user.getPaymentMethod());
-            return userService.saveUser(existingUser);
+    public ResponseEntity<?> updateUser(
+            @PathVariable Long id,
+            @RequestBody User user,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        try {
+            User currentUser = userService.getUserByEmail(userDetails.getUsername());
+            if (!Objects.equals(currentUser.getId(), id)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permisos para actualizar este usuario");
+            }
+            User existingUser = userService.getUserById(id);
+            if (existingUser != null) {
+                existingUser.setName(user.getName());
+                existingUser.setMail(user.getMail());
+                existingUser.setAddress(user.getAddress());
+                existingUser.setNumber(user.getNumber());
+                existingUser.setPaymentMethod(user.getPaymentMethod());
+                return ResponseEntity.ok(userService.saveUser(existingUser));
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return null;
     }
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a user")
