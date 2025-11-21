@@ -57,8 +57,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas - Catálogo visible para todos
-                        .requestMatchers(org.springframework.http.HttpMethod.GET,"/api/products/**").permitAll()           // GET productos (catálogo público)
-                        .requestMatchers(org.springframework.http.HttpMethod.GET,"/api/product_types/**").permitAll()      // GET tipos de productos
+                        .requestMatchers(org.springframework.http.HttpMethod.GET,"/api/product/**").permitAll()           // GET productos (catálogo público)
+                        .requestMatchers(org.springframework.http.HttpMethod.GET,"/api/product_type/**").permitAll()      // GET tipos de productos
                         .requestMatchers(org.springframework.http.HttpMethod.GET,"/api/payment_method/**").permitAll()     // Compatibilidad con tu nombre actual
 
                         // Autenticación

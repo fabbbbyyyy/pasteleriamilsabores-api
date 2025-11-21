@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
@@ -22,12 +22,12 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private int price;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id",nullable = false)
+    @JoinColumn(name = "product_type_id",nullable = false)
     private ProductType productType;
 
 }
