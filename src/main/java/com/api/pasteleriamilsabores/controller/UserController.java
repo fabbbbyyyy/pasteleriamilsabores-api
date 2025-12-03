@@ -17,7 +17,7 @@ import java.util.Objects;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping({"/api/user", "/api/user/"})
 @Tag(name = "User", description = "User Management System")
 
 public class UserController {
