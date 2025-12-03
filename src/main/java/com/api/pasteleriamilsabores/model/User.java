@@ -33,6 +33,10 @@ public class User {
     private String number;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "rol", nullable = false)
+    private Rol rol;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
 }

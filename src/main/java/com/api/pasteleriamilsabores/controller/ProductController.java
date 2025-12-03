@@ -3,6 +3,7 @@ package com.api.pasteleriamilsabores.controller;
 import com.api.pasteleriamilsabores.model.Product;
 import com.api.pasteleriamilsabores.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,11 +26,13 @@ public class ProductController {
         return productService.getProductById(id);
     }
     @PostMapping
+    @PreAuthorize("hasAuthority('admin')")
     @Operation(summary = "Add a new product")
     public Product createProduct(@RequestBody Product product) {
         return productService.saveProduct(product);
     }
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
     @Operation(summary = "Update an existing product")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
         Product existingProduct = productService.getProductById(id);
@@ -44,6 +47,7 @@ public class ProductController {
         return null;
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
     @Operation(summary = "Delete a product")
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);

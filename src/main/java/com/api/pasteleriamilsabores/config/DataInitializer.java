@@ -3,9 +3,11 @@ package com.api.pasteleriamilsabores.config;
 import com.api.pasteleriamilsabores.model.PaymentMethod;
 import com.api.pasteleriamilsabores.model.Product;
 import com.api.pasteleriamilsabores.model.ProductType;
+import com.api.pasteleriamilsabores.model.Rol;
 import com.api.pasteleriamilsabores.repository.PaymentMethodRepository;
 import com.api.pasteleriamilsabores.repository.ProductRepository;
 import com.api.pasteleriamilsabores.repository.ProductTypeRepository;
+import com.api.pasteleriamilsabores.repository.RolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -46,39 +51,53 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("✅ Métodos de pago inicializados correctamente");
         }
+
+        if (rolRepository.count() == 0) {
+            System.out.println("Inicializando roles...");
+
+            Rol admin = new Rol();
+            admin.setName("admin");
+            rolRepository.save(admin);
+
+            Rol cliente = new Rol();
+            cliente.setName("cliente");
+            rolRepository.save(cliente);
+
+        }
+
         if (productTypeRepository.count() == 0) {
             System.out.println("Inicializando tipos de producto..");
 
             ProductType circular = new ProductType();
-            circular.setName("Circular");
+            circular.setName("circular");
             productTypeRepository.save(circular);
 
             ProductType cuadrada = new ProductType();
-            cuadrada.setName("Cuadrada");
+            cuadrada.setName("cuadrada");
             productTypeRepository.save(cuadrada);
 
             ProductType individual = new ProductType();
-            individual.setName("Individual");
+            individual.setName("individual");
             productTypeRepository.save(individual);
 
             ProductType sinAzucar = new ProductType();
-            sinAzucar.setName("SinAzucar");
+            sinAzucar.setName("sinazucar");
             productTypeRepository.save(sinAzucar);
 
             ProductType tradicional = new ProductType();
-            tradicional.setName("Tradicional");
+            tradicional.setName("tradicional");
             productTypeRepository.save(tradicional);
 
             ProductType sinGluten = new ProductType();
-            sinGluten.setName("SinGluten");
+            sinGluten.setName("singluten");
             productTypeRepository.save(sinGluten);
 
             ProductType vegano = new ProductType();
-            vegano.setName("Vegano");
+            vegano.setName("vegano");
             productTypeRepository.save(vegano);
 
             ProductType especial = new ProductType();
-            especial.setName("Especial");
+            especial.setName("especial");
             productTypeRepository.save(especial);
             System.out.println("✅ Tipos de producto inicializados correctamente");
         }
@@ -662,3 +681,4 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("🚀 Aplicación lista para usar!");
     }
 }
+

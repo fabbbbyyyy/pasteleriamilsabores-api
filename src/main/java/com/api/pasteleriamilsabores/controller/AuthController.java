@@ -4,10 +4,12 @@ import com.api.pasteleriamilsabores.dto.LoginRequest;
 import com.api.pasteleriamilsabores.dto.LoginResponse;
 import com.api.pasteleriamilsabores.dto.RegisterRequest;
 import com.api.pasteleriamilsabores.model.PaymentMethod;
+import com.api.pasteleriamilsabores.model.Rol;
 import com.api.pasteleriamilsabores.model.User;
 import com.api.pasteleriamilsabores.repository.PaymentMethodRepository;
 import com.api.pasteleriamilsabores.repository.UserRepository;
 import com.api.pasteleriamilsabores.security.jwt.JwtUtil;
+import com.api.pasteleriamilsabores.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
@@ -66,8 +71,14 @@ public class AuthController {
             User user = userRepository.findByMail(loginRequest.getEmail())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+            // Obtener roleId desde el campo rol
+            Long roleId = null;
+            if (user.getRol() != null) {
+                roleId = user.getRol().getId();
+            }
+
             // Crear respuesta
-            LoginResponse response = new LoginResponse(jwt, user.getMail(), user.getName(), user.getAddress(),user.getNumber(), user.getPaymentMethod(), user.getId());
+            LoginResponse response = new LoginResponse(jwt, user.getMail(), user.getName(), user.getAddress(), user.getNumber(), user.getPaymentMethod(), roleId, user.getId());
 
             return ResponseEntity.ok(response);
 
@@ -106,14 +117,20 @@ public class AuthController {
             newUser.setAddress(registerRequest.getAddress());
             newUser.setPaymentMethod(paymentMethod);
 
-            // Guardar usuario
-            userRepository.save(newUser);
+            // Guardar usuario usando UserService para asignar rol por defecto
+            userService.saveUser(newUser);
+
+            // Obtener roleId desde el campo rol
+            Long roleId = null;
+            if (newUser.getRol() != null) {
+                roleId = newUser.getRol().getId();
+            }
 
             // Generar token
             final String jwt = jwtUtil.generateToken(newUser.getMail());
 
             // Crear respuesta
-            LoginResponse response = new LoginResponse(jwt, newUser.getMail(), newUser.getName(), newUser.getAddress(),newUser.getNumber(), newUser.getPaymentMethod(), newUser.getId());
+            LoginResponse response = new LoginResponse(jwt, newUser.getMail(), newUser.getName(), newUser.getAddress(), newUser.getNumber(), newUser.getPaymentMethod(), roleId, newUser.getId());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -124,4 +141,3 @@ public class AuthController {
         }
     }
 }
-

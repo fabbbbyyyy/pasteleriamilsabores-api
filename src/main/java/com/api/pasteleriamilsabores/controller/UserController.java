@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import java.util.Objects;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "User", description = "User Management System")
@@ -24,11 +26,13 @@ public class UserController {
     private UserService userService;
     @GetMapping
     @Operation(summary = "View a list of available users")
+    @PreAuthorize("hasAuthority('admin')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
     @GetMapping("/{id}")
     @Operation(summary = "Get a user by Id")
+    @PreAuthorize("hasAuthority('admin') or principal.username == @userService.getUserById(#id).mail")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
@@ -39,6 +43,7 @@ public class UserController {
     }
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing user")
+    @PreAuthorize("hasAuthority('admin') or principal.username == @userService.getUserById(#id).mail")
     public ResponseEntity<?> updateUser(
             @PathVariable Long id,
             @RequestBody User user,
@@ -65,6 +70,7 @@ public class UserController {
         }
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin') or principal.username == @userService.getUserById(#id).mail")
     @Operation(summary = "Delete a user")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
