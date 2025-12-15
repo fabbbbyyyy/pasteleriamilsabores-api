@@ -4,12 +4,15 @@ import com.api.pasteleriamilsabores.model.PaymentMethod;
 import com.api.pasteleriamilsabores.model.Product;
 import com.api.pasteleriamilsabores.model.ProductType;
 import com.api.pasteleriamilsabores.model.Rol;
+import com.api.pasteleriamilsabores.model.User;
 import com.api.pasteleriamilsabores.repository.PaymentMethodRepository;
 import com.api.pasteleriamilsabores.repository.ProductRepository;
 import com.api.pasteleriamilsabores.repository.ProductTypeRepository;
 import com.api.pasteleriamilsabores.repository.RolRepository;
+import com.api.pasteleriamilsabores.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +30,12 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private RolRepository rolRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
         // Inicializar métodos de pago si no existen
@@ -35,19 +44,19 @@ public class DataInitializer implements CommandLineRunner {
 
             PaymentMethod efectivo = new PaymentMethod();
             efectivo.setName("Efectivo");
-            paymentMethodRepository.save(efectivo);
+            paymentMethodRepository.save(efectivo); // ID 1
 
             PaymentMethod tarjeta = new PaymentMethod();
             tarjeta.setName("Tarjeta de Crédito");
-            paymentMethodRepository.save(tarjeta);
+            paymentMethodRepository.save(tarjeta); // ID 2
 
             PaymentMethod transferencia = new PaymentMethod();
             transferencia.setName("Transferencia Bancaria");
-            paymentMethodRepository.save(transferencia);
+            paymentMethodRepository.save(transferencia); // ID 3
 
             PaymentMethod paypal = new PaymentMethod();
             paypal.setName("PayPal");
-            paymentMethodRepository.save(paypal);
+            paymentMethodRepository.save(paypal); // ID 4
 
             System.out.println("✅ Métodos de pago inicializados correctamente");
         }
@@ -57,12 +66,41 @@ public class DataInitializer implements CommandLineRunner {
 
             Rol admin = new Rol();
             admin.setName("admin");
-            rolRepository.save(admin);
+            rolRepository.save(admin); // ID 1
 
             Rol cliente = new Rol();
             cliente.setName("cliente");
-            rolRepository.save(cliente);
+            rolRepository.save(cliente); // ID 2
 
+        }
+
+        if (userRepository.count() == 0) {
+            System.out.println("Inicializando usuarios...");
+
+            // Asumimos IDs: Rol Admin=1, Rol Cliente=2, Pago Efectivo=1
+            Rol adminRol = new Rol(); adminRol.setId(1L);
+            Rol clienteRol = new Rol(); clienteRol.setId(2L);
+            PaymentMethod pagoEfectivo = new PaymentMethod(); pagoEfectivo.setId(1L);
+
+            User admin = new User();
+            admin.setName("Administrador");
+            admin.setMail("admin@milsabores.cl");
+            admin.setPassword(passwordEncoder.encode("admin")); // Necesario para login
+            admin.setRol(adminRol);
+            admin.setPaymentMethod(pagoEfectivo);
+            userRepository.save(admin);
+
+            User cliente = new User();
+            cliente.setName("Cliente de Prueba");
+            cliente.setMail("cliente@ejemplo.com");
+            cliente.setPassword(passwordEncoder.encode("cliente")); // Necesario para login
+            cliente.setRol(clienteRol);
+            cliente.setPaymentMethod(pagoEfectivo);
+            cliente.setAddress("Calle Falsa 123");
+            cliente.setNumber("987654321");
+            userRepository.save(cliente);
+
+            System.out.println("✅ Usuarios inicializados correctamente");
         }
 
         if (productTypeRepository.count() == 0) {
@@ -681,4 +719,3 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("🚀 Aplicación lista para usar!");
     }
 }
-
